@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/test-db
+    username: mus
+    password: mus
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 2MB
