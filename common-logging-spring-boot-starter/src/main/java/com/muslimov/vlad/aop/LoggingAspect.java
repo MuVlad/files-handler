@@ -5,8 +5,12 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
+import java.util.StringJoiner;
 
 @Aspect
 public class LoggingAspect {
@@ -15,29 +19,28 @@ public class LoggingAspect {
     public void isService() {
     }
 
-    @After("isService() && execution(public **(..))")
+    @After("isService() && execution(public * *(..))")
     public void addLogging(JoinPoint point) {
 
         final var methodName = point.getSignature().getName();
         final var args = point.getArgs();
-
-        StringBuilder logMessage = new StringBuilder()
-            .append(methodName)
-            .append(" args: [");
-
-        for (Object arg : args) {
-            if (!arg.getClass().isAnnotationPresent(SensitiveData.class)) {
-                logMessage.append(arg).append(", ");
+        final var method = ((MethodSignature) point.getSignature()).getMethod();
+        final var joiner = new StringJoiner(
+            ", ",
+            methodName + " args: [",
+            "]"
+        );
+        for (int i = 0; i < method.getParameterAnnotations().length; i++) {
+            final boolean hasSensData = Arrays.stream(method.getParameterAnnotations()[i])
+                .anyMatch(SensitiveData.class::isInstance);
+            if (hasSensData) {
+                joiner.add("***");
+            } else {
+                joiner.add(args[i] + "");
             }
         }
-        if (args.length > 0) {
-            logMessage.delete(logMessage.length() - 2, logMessage.length());
-        }
-
-        logMessage.append("]");
-
         final var className = point.getTarget().getClass().getName();
         Logger log = LoggerFactory.getLogger(className);
-        log.info(logMessage.toString());
+        log.info(joiner.toString());
     }
 }

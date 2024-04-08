@@ -5,11 +5,13 @@ ___
 Проект для управления файлами, состоит из 2 модулей:
 
 - [backend](https://github.com/MuVlad/files-handler/tree/master/backend) - restful сервис для управления файлами
-- [common-logging-spring-boot-starter](https://github.com/MuVlad/files-handler/tree/master/common-logging-spring-boot-starter)- библиотека стратер для логирования
+- [common-logging-spring-boot-starter](https://github.com/MuVlad/files-handler/tree/master/common-logging-spring-boot-starter)-
+  библиотека стратер для логирования
 
 ---
 
 ### Стэк технологий
+
 * **Backend**:
     - Java 21
     - Maven
